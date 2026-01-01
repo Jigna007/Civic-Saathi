@@ -78,19 +78,22 @@ export function CreatePost() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        const coordString = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 
         // Try to reverse geocode to get a readable address
         try {
           const address = await reverseGeocodeLocation(latitude, longitude);
           if (address) {
-            setLocation(address);
+            // Store as "coordinates | address" so map can parse coordinates
+            // and display components can show the address
+            setLocation(`${coordString} | ${address}`);
             toast({
               title: "Location detected",
               description: `Found: ${address}`,
             });
           } else {
             // Fallback to coordinates if reverse geocoding fails
-            setLocation(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+            setLocation(coordString);
             toast({
               title: "Location detected",
               description:
@@ -99,7 +102,7 @@ export function CreatePost() {
           }
         } catch (error) {
           // Fallback to coordinates on error
-          setLocation(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+          setLocation(coordString);
           toast({
             title: "Location detected",
             description: "GPS coordinates captured.",

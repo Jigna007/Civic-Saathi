@@ -313,7 +313,11 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                       {/* Tags - Category on first line (using standardized category) */}
                       <div className="flex flex-wrap gap-2">
                         {issue.category && (
-                          <Badge className={`${getCategoryColor(issue.category)} text-xs font-bold px-3 py-1.5`}>
+                          <Badge
+                            className={`${getCategoryColor(
+                              issue.category
+                            )} text-xs font-bold px-3 py-1.5`}
+                          >
                             {issue.category}
                           </Badge>
                         )}

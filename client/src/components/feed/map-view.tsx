@@ -1,8 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { MaintenanceIssue, User } from "@shared/schema";
 import { geocodeLocation } from "@/lib/geocode";
+
+// Component to fit map bounds to all markers
+function FitBounds({ markers }: { markers: { location: [number, number] }[] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (markers.length > 0) {
+      const bounds = L.latLngBounds(markers.map((m) => m.location));
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+    }
+  }, [markers, map]);
+
+  return null;
+}
 
 // Severity-based marker colors
 const createColoredIcon = (severity: string) => {
@@ -50,11 +64,19 @@ interface MapViewProps {
 
 function parseLatLng(location?: string): [number, number] | null {
   if (!location) return null;
+
+  // Handle new format: "lat, lng | address"
+  // Extract coordinates before the pipe if present
+  let coordPart = location;
+  if (location.includes("|")) {
+    coordPart = location.split("|")[0].trim();
+  }
+
   // Expect formats like: "12.97, 77.59" or "lat:12.97 lng:77.59"
-  const match = location
+  const match = coordPart
     .replace(/lat\s*[:=]?\s*/i, "")
     .replace(/lng|lon\s*[:=]?\s*/i, "")
-    .match(/(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/);
+    .match(/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/);
   if (match) {
     const lat = parseFloat(match[1]);
     const lng = parseFloat(match[2]);
@@ -163,8 +185,14 @@ export function MapView({ issues }: MapViewProps) {
         if (!loc) continue;
         // Skip if already have coordinates cached
         if (geoCacheRef.current.has(loc)) continue;
-        // Skip if already in coordinate format
+        // Skip if already in coordinate format (plain coordinates)
         if (loc.match(/^-?\d+\.?\d*\s*,\s*-?\d+\.?\d*$/)) continue;
+        // Skip if in new format with coordinates before pipe: "lat, lng | address"
+        if (
+          loc.includes(" | ") &&
+          loc.split(" | ")[0].match(/^-?\d+\.?\d*\s*,\s*-?\d+\.?\d*$/)
+        )
+          continue;
         if (!toGeocode.includes(loc)) toGeocode.push(loc);
       }
 
@@ -174,11 +202,15 @@ export function MapView({ issues }: MapViewProps) {
       try {
         // Geocode each location using our CORS-proxy helper
         for (const loc of toGeocode) {
+          console.log(`[Map] Geocoding location: "${loc}"`);
           const coords = await geocodeLocation(loc);
           if (coords) {
+            console.log(`[Map] Geocoded "${loc}" to:`, coords);
             geoCacheRef.current.set(loc, coords);
             // Force rerender to show newly geocoded marker
             forceRerender((v) => v + 1);
+          } else {
+            console.warn(`[Map] Failed to geocode "${loc}"`);
           }
           // Small delay between requests to be polite to the API
           await new Promise((r) => setTimeout(r, 400));
@@ -229,6 +261,7 @@ export function MapView({ issues }: MapViewProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
         />
+        <FitBounds markers={markers} />
         {markers.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-sm text-gray-500 pointer-events-none z-[1000]">
             {geocoding ? "Locating addresses..." : "No mappable locations yet"}

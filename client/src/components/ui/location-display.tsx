@@ -15,8 +15,10 @@ const locationCache = new Map<string, string>();
 
 /**
  * Displays a location string, automatically converting coordinates to addresses.
- * If the location is already a text address, it displays as-is.
- * If the location is coordinates (lat, lng), it attempts reverse geocoding.
+ * Handles formats:
+ * - "lat, lng | address" - displays the address part
+ * - "lat, lng" - attempts reverse geocoding
+ * - "text address" - displays as-is
  */
 export function LocationDisplay({
   location,
@@ -26,6 +28,14 @@ export function LocationDisplay({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // Check for new format: "coordinates | address"
+    if (location.includes(" | ")) {
+      const parts = location.split(" | ");
+      // Display the address part (after the pipe)
+      setDisplayLocation(parts.slice(1).join(" | ").trim());
+      return;
+    }
+
     // Check if location looks like coordinates
     if (isCoordinateString(location)) {
       // Check cache first
