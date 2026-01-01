@@ -129,7 +129,7 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                 <div className="flex items-center gap-2 mb-1">
                   <h3
                     className={`${
-                      isMobile ? "text-base" : "text-xl"
+                      isMobile ? "text-lg" : "text-2xl"
                     } font-semibold text-gray-900`}
                   >
                     {issue.reporter?.username || "user"}
@@ -137,18 +137,18 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                   <span className="text-gray-400">-</span>
                   <Badge
                     variant="secondary"
-                    className="bg-yellow-50 text-yellow-700 border border-yellow-200 font-medium text-xs px-2.5 py-0.5 flex-shrink-0"
+                    className="bg-yellow-50 text-yellow-700 border border-yellow-200 font-medium text-sm px-3 py-1 flex-shrink-0"
                   >
                     ⭐ {issue.reporter?.credibilityScore || 0}
                   </Badge>
                 </div>
 
                 {/* Location and Time on Same Line */}
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-sm">
                   {issue.location && (
                     <div className="flex items-center gap-1 text-blue-600">
                       <svg
-                        className="w-3 h-3 flex-shrink-0"
+                        className="w-4 h-4 flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -168,7 +168,7 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                       </svg>
                       <LocationDisplay
                         location={issue.location}
-                        className="font-medium truncate max-w-[140px]"
+                        className="font-medium truncate max-w-[160px]"
                       />
                     </div>
                   )}
@@ -291,10 +291,10 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                     </div>
                     {/* Description Section - Takes ~35% of card */}
                     <div className="flex-1 bg-white rounded-lg p-3 border border-gray-200 overflow-y-auto">
-                      <h5 className="text-sm font-bold text-gray-900 mb-1.5 line-clamp-2">
+                      <h5 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
                         {issue.title}
                       </h5>
-                      <p className="text-xs text-gray-700 leading-relaxed line-clamp-3">
+                      <p className="text-base text-gray-700 leading-relaxed line-clamp-4">
                         {issue.description}
                       </p>
                     </div>
@@ -316,7 +316,7 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                           <Badge
                             className={`${getCategoryColor(
                               issue.category
-                            )} text-xs font-bold px-3 py-1.5`}
+                            )} text-sm font-bold px-4 py-2`}
                           >
                             {issue.category}
                           </Badge>
@@ -328,21 +328,21 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                           <Badge
                             className={`${getSeverityColor(
                               issue.aiAnalysis.severity
-                            )} text-xs font-bold px-3 py-1.5 shadow-sm`}
+                            )} text-sm font-bold px-4 py-2 shadow-sm`}
                           >
                             {issue.aiAnalysis.severity.toUpperCase()}
                           </Badge>
                         )}
                         {issue.aiAnalysis?.confidence && (
-                          <Badge className="bg-white text-purple-900 text-xs font-bold border-2 border-purple-300 px-3 py-1.5 shadow-sm">
+                          <Badge className="bg-white text-purple-900 text-sm font-bold border-2 border-purple-300 px-4 py-2 shadow-sm">
                             {Math.round(issue.aiAnalysis.confidence * 100)}%
                           </Badge>
                         )}
                       </div>
                       {/* Reasoning */}
                       {issue.aiAnalysis?.reasoning && (
-                        <div className="flex-1 bg-white rounded-xl p-3.5 border border-purple-200 shadow-sm overflow-y-auto">
-                          <p className="text-sm text-gray-800 leading-relaxed break-words">
+                        <div className="flex-1 bg-white rounded-xl p-4 border border-purple-200 shadow-sm overflow-y-auto">
+                          <p className="text-base text-gray-800 leading-relaxed break-words">
                             {issue.aiAnalysis.reasoning}
                           </p>
                         </div>

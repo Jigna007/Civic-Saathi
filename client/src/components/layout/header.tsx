@@ -53,7 +53,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
               <div className="h-9 w-9 bg-gray-800 rounded-full flex items-center justify-center">
                 <Bolt className="text-white" size={20} />
               </div>
-              <span className="text-xl sm:text-2xl font-bold text-gray-900">
+              <span className="text-2xl sm:text-3xl font-bold text-gray-900">
                 CivicSaathi
               </span>
             </div>
