@@ -3,9 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  plugins: [
-    react(),
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -13,18 +11,19 @@ export default defineConfig({
     },
   },
   root: path.resolve(import.meta.dirname, "client"),
+  envDir: path.resolve(import.meta.dirname),
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
   },
   server: {
     proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
+      "/api": {
+        target: "http://localhost:5000",
         changeOrigin: true,
       },
-      '/sample-images': {
-        target: 'http://localhost:5000',
+      "/sample-images": {
+        target: "http://localhost:5000",
         changeOrigin: true,
       },
     },
