@@ -124,7 +124,10 @@ export async function analyzeIssue(
   imageBase64?: string
 ): Promise<AIAnalysis> {
   try {
-    const response = await fetch("/api/analyze-issue", {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+    const url = API_BASE_URL ? `${API_BASE_URL}/api/analyze-issue` : "/api/analyze-issue";
+    
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

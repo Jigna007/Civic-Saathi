@@ -48,6 +48,17 @@ export interface IStorage {
   ): Promise<{ upvoted: boolean; newCount: number }>;
 }
 
+// Helper function to get proper image URL based on environment
+function getImageUrl(relativePath: string): string {
+  // In production, return the full URL with the domain
+  if (process.env.NODE_ENV === "production") {
+    // Sample images are served from /sample-images on Railway
+    // Frontend will use the API_BASE_URL from environment variables to construct full URL
+    return relativePath;
+  }
+  return relativePath;
+}
+
 export class MemStorage implements IStorage {
   private users: Map<string, User> = new Map();
   private issues: Map<string, MaintenanceIssue> = new Map();
@@ -143,7 +154,7 @@ export class MemStorage implements IStorage {
         status: "in_progress",
         progress: 72,
         location: "Nizampet Main Road", // Nizampet Main Road coordinates
-        imageUrls: ["/sample-images/pothole on road.webp"],
+        imageUrls: [getImageUrl("/sample-images/pothole on road.webp")],
         reporterId: regularUser.id,
         assignedTechnicianId: technicians[2].id,
         aiAnalysis: {
@@ -167,7 +178,7 @@ export class MemStorage implements IStorage {
         status: "assigned",
         progress: 35,
         location: "Bachupally Crossroads", // Bachupally Cross Roads coordinates
-        imageUrls: ["/sample-images/flcikering streetlights.webp"],
+        imageUrls: [getImageUrl("/sample-images/flcikering streetlights.webp")],
         reporterId: adminUser.id,
         assignedTechnicianId: technicians[1].id,
         aiAnalysis: {
@@ -191,7 +202,7 @@ export class MemStorage implements IStorage {
         status: "open",
         progress: 8,
         location: "Nizampet X Roads", // Nizampet X Roads coordinates
-        imageUrls: ["/sample-images/broken traffic sign.webp"],
+        imageUrls: [getImageUrl("/sample-images/broken traffic sign.webp")],
         reporterId: regularUser.id,
         assignedTechnicianId: null,
         aiAnalysis: {
@@ -215,7 +226,7 @@ export class MemStorage implements IStorage {
         status: "open",
         progress: 5,
         location: "JNTU Road, Bachupally", // Bachupally Road near JNTU coordinates
-        imageUrls: ["/sample-images/trash in park.webp"],
+        imageUrls: [getImageUrl("/sample-images/trash in park.webp")],
         reporterId: adminUser.id,
         assignedTechnicianId: null,
         aiAnalysis: {
