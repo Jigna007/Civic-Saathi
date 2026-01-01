@@ -164,10 +164,10 @@ After deployment, verify:
 After completing all steps, you'll have:
 
 ```
-🌐 Frontend (Vercel): https://civicsaathi.vercel.app
-🔌 Backend (Railway): https://civicsaathi-production.up.railway.app
-💚 Health Check: https://civicsaathi-production.up.railway.app/health
-📊 API Base: https://civicsaathi-production.up.railway.app/api
+🌐 Frontend (Vercel): https://civic-saathi.vercel.app
+🔌 Backend (Railway): https://web-production-14e5.up.railway.app
+💚 Health Check: https://web-production-14e5.up.railway.app/health
+📊 API Base: https://web-production-14e5.up.railway.app/api
 ```
 
 ---
@@ -234,8 +234,8 @@ After completing all steps, you'll have:
 Include these URLs in your hackathon submission:
 
 ```
-🌐 Live Demo: https://civicsaathi.vercel.app
-🔗 Backend API: https://civicsaathi-production.up.railway.app
+🌐 Live Demo: https://civic-saathi.vercel.app
+🔗 Backend API: https://web-production-14e5.up.railway.app
 📦 GitHub Repo: https://github.com/sentinel-11/sih25-civic-saathi
 ```
 
