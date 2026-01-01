@@ -69,13 +69,13 @@ app.use((req, res, next) => {
   server.listen(
     {
       port,
-      host: "localhost",
+      host: "0.0.0.0",
       reusePort: false,
     },
     () => {
-      console.log(`🚀 Backend server running on http://localhost:${port}`);
-      console.log(`📋 API endpoints available at http://localhost:${port}/api`);
-      console.log(`💗 Health check: http://localhost:${port}/health`);
+      console.log(`🚀 Backend server running on http://0.0.0.0:${port}`);
+      console.log(`📋 API endpoints available at http://0.0.0.0:${port}/api`);
+      console.log(`💗 Health check: http://0.0.0.0:${port}/health`);
     }
   );
 })();
