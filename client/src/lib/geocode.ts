@@ -51,14 +51,16 @@ export async function geocodeLocation(
   try {
     // Use our backend API to proxy geocoding requests
     // This avoids CORS issues since the backend makes server-to-server requests
-    const response = await fetch(
-      `/api/geocode?q=${encodeURIComponent(trimmed)}`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+    const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+    const url = API_BASE_URL
+      ? `${API_BASE_URL}/api/geocode?q=${encodeURIComponent(trimmed)}`
+      : `/api/geocode?q=${encodeURIComponent(trimmed)}`;
+
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
     if (!response.ok) {
       console.warn(`[Geocode] HTTP error for "${trimmed}":`, response.status);

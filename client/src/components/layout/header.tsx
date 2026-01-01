@@ -21,7 +21,12 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
   const handleResetFeed = async () => {
     try {
-      const response = await fetch("/api/reset-data", { method: "POST" });
+      const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+      const url = API_BASE_URL
+        ? `${API_BASE_URL}/api/reset-data`
+        : "/api/reset-data";
+
+      const response = await fetch(url, { method: "POST" });
       if (response.ok) {
         window.location.reload();
       } else {

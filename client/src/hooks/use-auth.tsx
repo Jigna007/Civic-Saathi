@@ -1,5 +1,11 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User } from '@shared/schema';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { User } from "@shared/schema";
 
 interface AuthContextType {
   user: User | null;
@@ -19,32 +25,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (username: string, password: string) => {
     // For demo purposes, authenticate against backend users
     // In a real app, this would connect to your backend auth service
-    if ((username === 'admin' || username === 'user') && password === 'password') {
+    if (
+      (username === "admin" || username === "user") &&
+      password === "password"
+    ) {
       try {
+        // Get API base URL from environment variable
+        const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+        const url = API_BASE_URL
+          ? `${API_BASE_URL}/api/users/username/${username}`
+          : `/api/users/username/${username}`;
+
         // Fetch user from backend by username to get the correct ID
-        const response = await fetch(`/api/users/username/${username}`);
+        const response = await fetch(url);
         if (response.ok) {
           const user = await response.json();
           setUser(user);
         } else {
-          throw new Error('User not found in backend');
+          throw new Error("User not found in backend");
         }
       } catch (error) {
         // Fallback to mock user if backend call fails
-        console.warn('Backend user lookup failed, using mock data:', error);
+        console.warn("Backend user lookup failed, using mock data:", error);
         const mockUser: User = {
-          id: username === 'admin' ? 'admin-id' : 'user-id',
+          id: username === "admin" ? "admin-id" : "user-id",
           username: username,
           email: `${username}@maintain.ai`,
-          role: username === 'admin' ? 'admin' : 'user',
-          credibilityScore: username === 'admin' ? 95 : 88,
+          role: username === "admin" ? "admin" : "user",
+          credibilityScore: username === "admin" ? 95 : 88,
           firebaseUid: `${username}-firebase-uid`,
           createdAt: new Date(),
         };
         setUser(mockUser);
       }
     } else {
-      throw new Error('Invalid credentials');
+      throw new Error("Invalid credentials");
     }
   };
 
@@ -63,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
