@@ -356,107 +356,152 @@ export default function MyReportsPage() {
           >
             <div className="max-w-4xl mx-auto w-full h-full py-2">
               <Card className="w-full h-full flex flex-col overflow-hidden border-gray-200">
-                {/* TOP 50%: Info Section - symmetric spacing */}
-                <div className="h-1/2 flex flex-col justify-center gap-3 px-5 py-4">
-                  {/* Caption - concise issue description (no pill) */}
-                  <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2 text-center px-2">
+                {/* TOP 50%: Info Section - left aligned, larger fonts */}
+                <div className="h-1/2 flex flex-col gap-4 px-6 py-5">
+                  {/* Caption - at the top, larger font, left aligned */}
+                  <h3 className="font-bold text-gray-900 text-2xl leading-tight text-left mb-2">
                     {issue.title}
                   </h3>
 
-                  {/* Category - Severity */}
-                  <div className="bg-gray-50 rounded-full px-4 py-2 flex items-center justify-center gap-3">
-                    <span
-                      className={`text-sm font-medium ${
-                        getCategoryColors(issue.category).text
-                      }`}
-                    >
-                      {issue.category}
-                    </span>
-                    <span className="text-gray-300">•</span>
-                    <span
-                      className={`flex items-center gap-1.5 text-sm font-medium capitalize ${
-                        issue.severity === "critical"
-                          ? "text-red-600"
-                          : issue.severity === "high" ||
-                            issue.severity === "major"
-                          ? "text-orange-600"
-                          : "text-gray-600"
-                      }`}
-                    >
+                  {/* Category */}
+                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
+                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-base text-left">
+                        Category
+                      </span>
+                      <span className="text-gray-500 font-medium text-base">
+                        :
+                      </span>
                       <span
-                        className={`w-2 h-2 rounded-full ${getSeverityDotColor(
-                          issue.severity
-                        )}`}
-                      />
-                      {issue.severity}
-                    </span>
+                        className={`text-base font-semibold ${
+                          getCategoryColors(issue.category).text
+                        }`}
+                      >
+                        {issue.category}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Location - Time */}
-                  <div className="bg-gray-50 rounded-full px-4 py-2 flex items-center justify-center gap-3 text-sm text-gray-700">
-                    {issue.location && (
-                      <span className="flex items-center gap-1.5">
-                        <MapPin size={14} className="text-gray-500" />
+                  {/* Severity */}
+                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
+                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-base text-left">
+                        Severity
+                      </span>
+                      <span className="text-gray-500 font-medium text-base">
+                        :
+                      </span>
+                      <span
+                        className={`flex items-center gap-2 text-base font-semibold capitalize ${
+                          issue.severity === "critical"
+                            ? "text-red-600"
+                            : issue.severity === "high" ||
+                              issue.severity === "major"
+                            ? "text-orange-600"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full ${getSeverityDotColor(
+                            issue.severity
+                          )}`}
+                        />
+                        {issue.severity}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  {issue.location && (
+                    <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
+                      <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
+                        <span className="text-gray-500 font-medium text-base text-left">
+                          Location
+                        </span>
+                        <span className="text-gray-500 font-medium text-base">
+                          :
+                        </span>
                         <LocationDisplay
                           location={issue.location}
-                          className="truncate max-w-[150px] font-medium"
+                          className="text-gray-700 font-medium text-base"
                         />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Time */}
+                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
+                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-base text-left">
+                        Reported
                       </span>
-                    )}
-                    <span className="text-gray-400">•</span>
-                    <span className="flex items-center gap-1.5">
-                      <Calendar size={14} className="text-gray-500" />
-                      <span className="font-medium">
+                      <span className="text-gray-500 font-medium text-base">
+                        :
+                      </span>
+                      <span className="font-medium text-base text-gray-700">
                         {formatDistanceToNow(new Date(issue.createdAt!), {
                           addSuffix: false,
                         }).replace(/^about /, "")}{" "}
                         ago
                       </span>
-                    </span>
+                    </div>
                   </div>
 
                   {/* Progress Stage */}
                   <div
-                    className={`rounded-full px-4 py-2 flex items-center justify-center gap-2 text-sm font-medium ${statusInfo.color}`}
+                    className={`rounded-full px-5 py-2.5 w-full ${statusInfo.color}`}
                   >
-                    <StatusIcon size={14} />
-                    <span>
-                      {issue.status === "open" && "Issue Reported"}
-                      {issue.status === "assigned" && "Taskforce Assigned"}
-                      {issue.status === "in_progress" &&
-                        "Resolution in Progress"}
-                      {issue.status === "resolved" && "Issue Resolved"}
-                      {![
-                        "open",
-                        "assigned",
-                        "in_progress",
-                        "resolved",
-                      ].includes(issue.status) && "Routed to Authorities"}
-                    </span>
+                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
+                      <span className="font-semibold text-base text-left">
+                        Status
+                      </span>
+                      <span className="font-semibold text-base">:</span>
+                      <span className="font-semibold text-base">
+                        {issue.status === "open" && "Issue Reported"}
+                        {issue.status === "assigned" && "Taskforce Assigned"}
+                        {issue.status === "in_progress" &&
+                          "Resolution in Progress"}
+                        {issue.status === "resolved" && "Issue Resolved"}
+                        {![
+                          "open",
+                          "assigned",
+                          "in_progress",
+                          "resolved",
+                        ].includes(issue.status) && "Routed to Authorities"}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Technician Info */}
-                  <div className="bg-gray-50 rounded-full px-4 py-2 flex items-center justify-center gap-2 text-sm">
-                    <UserIcon size={14} className="text-gray-500" />
-                    {assignedTech ? (
-                      <span className="text-gray-800">
-                        <span className="font-semibold">
-                          {assignedTech.name}
-                        </span>
-                        {assignedTech.phone && (
-                          <span className="text-gray-600 ml-2">
-                            <Phone size={12} className="inline mr-1" />
-                            <span className="font-medium">
-                              {assignedTech.phone}
-                            </span>
+                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
+                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-base flex items-center gap-1.5 text-left">
+                        <UserIcon size={16} />
+                        Technician
+                      </span>
+                      <span className="text-gray-500 font-medium text-base">
+                        :
+                      </span>
+                      {assignedTech ? (
+                        <span className="text-gray-800 text-base">
+                          <span className="font-semibold">
+                            {assignedTech.name}
                           </span>
-                        )}
-                      </span>
-                    ) : (
-                      <span className="text-gray-500 font-medium">
-                        No technician assigned yet
-                      </span>
-                    )}
+                          {assignedTech.phone && (
+                            <span className="text-gray-600 ml-2">
+                              <Phone size={14} className="inline mr-1" />
+                              <span className="font-medium">
+                                {assignedTech.phone}
+                              </span>
+                            </span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-gray-500 font-medium text-base">
+                          Not assigned yet
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
