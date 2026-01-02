@@ -7,7 +7,16 @@ console.log(
     apiKey ? apiKey.substring(0, 10) + "..." : "MISSING"
   }`
 );
-const genAI = new GoogleGenerativeAI(apiKey);
+
+// Initialize Gemini only if API key is available
+let genAI: GoogleGenerativeAI | null = null;
+if (apiKey) {
+  try {
+    genAI = new GoogleGenerativeAI(apiKey);
+  } catch (error) {
+    console.error("[Gemini] Failed to initialize:", error);
+  }
+}
 
 /**
  * AIAnalysis includes both `domain` (human-readable) and `category` (for DB storage).
@@ -26,8 +35,10 @@ export async function analyzeMaintenanceIssue(
   imageBase64?: string
 ): Promise<AIAnalysis> {
   try {
-    if (!process.env.GEMINI_API_KEY) {
-      console.log("No Gemini API key found, using fallback analysis");
+    if (!apiKey || !genAI) {
+      console.log(
+        "No Gemini API key or initialization failed, using fallback analysis"
+      );
       return fallbackAnalysis(description);
     }
 

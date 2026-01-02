@@ -3,11 +3,13 @@
 ## 🚀 Live URLs
 
 ### Frontend
+
 - **URL**: https://civic-saathi.vercel.app/
 - **Platform**: Vercel
 - **Status**: ✅ Live
 
 ### Backend API
+
 - **URL**: https://web-production-14e5.up.railway.app
 - **Platform**: Railway
 - **Status**: ✅ Live
@@ -17,18 +19,19 @@
 
 ## 📋 Deployment Summary
 
-| Component | Service | URL | Status |
-|-----------|---------|-----|--------|
-| Frontend (React + Vite) | Vercel | https://civic-saathi.vercel.app | ✅ |
-| Backend (Node.js + Express) | Railway | https://web-production-14e5.up.railway.app | ✅ |
-| API Endpoints | Railway | /api/* | ✅ |
-| Health Check | Railway | /health | ✅ |
+| Component                   | Service | URL                                        | Status |
+| --------------------------- | ------- | ------------------------------------------ | ------ |
+| Frontend (React + Vite)     | Vercel  | https://civic-saathi.vercel.app            | ✅     |
+| Backend (Node.js + Express) | Railway | https://web-production-14e5.up.railway.app | ✅     |
+| API Endpoints               | Railway | /api/\*                                    | ✅     |
+| Health Check                | Railway | /health                                    | ✅     |
 
 ---
 
 ## 🔐 Environment Variables Set
 
 ### Vercel (Frontend)
+
 - ✅ VITE_FIREBASE_API_KEY
 - ✅ VITE_FIREBASE_PROJECT_ID
 - ✅ VITE_FIREBASE_APP_ID
@@ -36,6 +39,7 @@
 - ✅ VITE_API_URL = https://web-production-14e5.up.railway.app
 
 ### Railway (Backend)
+
 - ✅ GEMINI_API_KEY
 - ✅ PORT = 5000
 - ✅ NODE_ENV = production
@@ -45,10 +49,12 @@
 ## 🔧 Configuration Updates Made
 
 1. **vercel.json**
+
    - Updated API rewrite destination to Railway URL
    - Build configuration optimized for Vite
 
 2. **server/backend-only.ts**
+
    - Changed host from `localhost` to `0.0.0.0` for Railway container
    - Enabled production-ready CORS settings
 
@@ -71,6 +77,7 @@
 ## 🎯 For Your Hackathon Submission
 
 ### Presentation Links
+
 ```
 🌐 Live Demo: https://civic-saathi.vercel.app
 🔗 Backend API: https://web-production-14e5.up.railway.app
@@ -78,6 +85,7 @@
 ```
 
 ### Demo Accounts
+
 - **Admin**: `admin` / `password`
 - **User**: `user` / `password`
 
@@ -86,6 +94,7 @@
 ## 🔄 Continuous Deployment
 
 Both Vercel and Railway are configured for **continuous deployment**:
+
 - Push to `main` branch → Auto builds and deploys
 - No manual deployment needed
 - Changes live in ~2-3 minutes
@@ -109,14 +118,17 @@ Both Vercel and Railway are configured for **continuous deployment**:
 If you encounter issues:
 
 1. **Frontend not loading**
+
    - Check browser console for errors
    - Verify VITE_API_URL in Vercel environment variables
 
 2. **API calls failing**
+
    - Test `/health` endpoint directly
    - Check Railway logs for backend errors
 
 3. **AI Analysis not working**
+
    - Verify GEMINI_API_KEY on Railway
    - Check Gemini API quota
 

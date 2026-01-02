@@ -145,11 +145,13 @@ export async function reverseGeocodeLocation(
   }
 
   try {
-    const response = await fetch(
-      `/api/reverse-geocode?lat=${encodeURIComponent(
-        lat
-      )}&lon=${encodeURIComponent(lon)}`,
-      {
+    // Use API_BASE_URL from environment for production
+    const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+    const url = API_BASE_URL 
+      ? `${API_BASE_URL}/api/reverse-geocode?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`
+      : `/api/reverse-geocode?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`;
+    
+    const response = await fetch(url, {
         headers: {
           Accept: "application/json",
         },

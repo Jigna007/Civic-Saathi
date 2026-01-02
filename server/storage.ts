@@ -50,11 +50,12 @@ export interface IStorage {
 
 // Helper function to get proper image URL based on environment
 function getImageUrl(relativePath: string): string {
-  // In production, return the full URL with the domain
+  // In production, return the full URL with the Railway domain
   if (process.env.NODE_ENV === "production") {
-    // Sample images are served from /sample-images on Railway
-    // Frontend will use the API_BASE_URL from environment variables to construct full URL
-    return relativePath;
+    const railwayUrl = process.env.RAILWAY_PUBLIC_DOMAIN
+      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+      : "https://web-production-14e5.up.railway.app";
+    return `${railwayUrl}${relativePath}`;
   }
   return relativePath;
 }
