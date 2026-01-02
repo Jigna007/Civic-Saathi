@@ -16,6 +16,8 @@
  * - Pre-geocode locations and store coordinates in the database
  */
 
+import { API_BASE_URL } from "./config";
+
 // Cache geocoded results to avoid repeated API calls
 const geocodeCache = new Map<string, [number, number]>();
 
@@ -51,7 +53,6 @@ export async function geocodeLocation(
   try {
     // Use our backend API to proxy geocoding requests
     // This avoids CORS issues since the backend makes server-to-server requests
-    const API_BASE_URL = import.meta.env.VITE_API_URL || "";
     const url = API_BASE_URL
       ? `${API_BASE_URL}/api/geocode?q=${encodeURIComponent(trimmed)}`
       : `/api/geocode?q=${encodeURIComponent(trimmed)}`;
@@ -145,8 +146,7 @@ export async function reverseGeocodeLocation(
   }
 
   try {
-    // Use API_BASE_URL from environment for production
-    const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+    // Use API_BASE_URL from centralized config for production
     const url = API_BASE_URL 
       ? `${API_BASE_URL}/api/reverse-geocode?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`
       : `/api/reverse-geocode?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`;

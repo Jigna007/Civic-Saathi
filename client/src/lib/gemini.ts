@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CategoryType, CATEGORIES } from "../../../shared/categories";
+import { API_BASE_URL } from "./config";
 
 /**
  * AIAnalysis includes both `domain` (human-readable) and `category` (for DB storage).
@@ -124,7 +125,6 @@ export async function analyzeIssue(
   imageBase64?: string
 ): Promise<AIAnalysis> {
   try {
-    const API_BASE_URL = import.meta.env.VITE_API_URL || "";
     const url = API_BASE_URL
       ? `${API_BASE_URL}/api/analyze-issue`
       : "/api/analyze-issue";

@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Menu, Bolt, User, LogOut, RotateCcw } from "lucide-react";
+import { API_BASE_URL } from "@/lib/config";
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -21,7 +22,6 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
   const handleResetFeed = async () => {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL || "";
       const url = API_BASE_URL
         ? `${API_BASE_URL}/api/reset-data`
         : "/api/reset-data";

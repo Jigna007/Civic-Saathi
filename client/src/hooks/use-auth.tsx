@@ -6,6 +6,7 @@ import {
   ReactNode,
 } from "react";
 import { User } from "@shared/schema";
+import { API_BASE_URL } from "@/lib/config";
 
 interface AuthContextType {
   user: User | null;
@@ -30,8 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password === "password"
     ) {
       try {
-        // Get API base URL from environment variable
-        const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+        // Use centralized API base URL from config
         const url = API_BASE_URL
           ? `${API_BASE_URL}/api/users/username/${username}`
           : `/api/users/username/${username}`;
