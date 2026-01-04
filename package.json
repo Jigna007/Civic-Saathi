@@ -68,5 +68,9 @@
     "vaul": "^1.1.2",
     "vite": "^5.4.19",
     "wouter": "^3.7.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3"
   }
 }

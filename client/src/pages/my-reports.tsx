@@ -203,9 +203,9 @@ export default function MyReportsPage() {
   const avgProgress =
     totalReports > 0
       ? Math.round(
-          (myIssues?.reduce((sum, issue) => sum + issue.progress, 0) || 0) /
-            totalReports
-        )
+        (myIssues?.reduce((sum, issue) => sum + issue.progress, 0) || 0) /
+        totalReports
+      )
       : 0;
 
   const memberSince = user.createdAt
@@ -313,10 +313,10 @@ export default function MyReportsPage() {
                         {user.credibilityScore >= 8
                           ? "Excellent"
                           : user.credibilityScore >= 6
-                          ? "Good"
-                          : user.credibilityScore >= 4
-                          ? "Fair"
-                          : "Needs Improvement"}
+                            ? "Good"
+                            : user.credibilityScore >= 4
+                              ? "Fair"
+                              : "Needs Improvement"}
                       </Badge>
                     </div>
                   </div>
@@ -355,16 +355,16 @@ export default function MyReportsPage() {
             className="h-screen pt-14 pb-4 px-4 sm:px-6 lg:px-8 snap-start snap-always"
           >
             <div className="max-w-4xl mx-auto w-full h-full py-2">
-              <Card className="w-full h-full flex flex-col overflow-hidden border-gray-200">
-                {/* TOP 50%: Info Section - left aligned, larger fonts */}
-                <div className="h-1/2 flex flex-col gap-4 px-6 py-5">
+              <Card className="w-full h-full flex flex-col md:flex-row overflow-hidden border-gray-200 shadow-md">
+                {/* TOP 50% (Mobile) / LEFT 50% (Desktop): Info Section */}
+                <div className="h-1/2 md:h-full md:w-1/2 flex flex-col gap-2 sm:gap-4 px-4 py-3 sm:px-6 sm:py-5 overflow-y-auto md:overflow-y-auto custom-scrollbar">
                   {/* Caption - at the top, larger font, left aligned */}
-                  <h3 className="font-bold text-gray-900 text-2xl leading-tight text-left mb-2">
+                  <h3 className="font-bold text-gray-900 text-xl sm:text-2xl leading-tight text-left mb-1 sm:mb-2">
                     {issue.title}
                   </h3>
 
                   {/* Category */}
-                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
+                  <div className="bg-gray-50 rounded-full px-3 py-1.5 sm:px-5 sm:py-2.5 w-full">
                     <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
                       <span className="text-gray-500 font-medium text-base text-left">
                         Category
@@ -373,9 +373,8 @@ export default function MyReportsPage() {
                         :
                       </span>
                       <span
-                        className={`text-base font-semibold ${
-                          getCategoryColors(issue.category).text
-                        }`}
+                        className={`text-base font-semibold ${getCategoryColors(issue.category).text
+                          }`}
                       >
                         {issue.category}
                       </span>
@@ -392,14 +391,13 @@ export default function MyReportsPage() {
                         :
                       </span>
                       <span
-                        className={`flex items-center gap-2 text-base font-semibold capitalize ${
-                          issue.severity === "critical"
-                            ? "text-red-600"
-                            : issue.severity === "high" ||
-                              issue.severity === "major"
+                        className={`flex items-center gap-2 text-base font-semibold capitalize ${issue.severity === "critical"
+                          ? "text-red-600"
+                          : issue.severity === "high" ||
+                            issue.severity === "major"
                             ? "text-orange-600"
                             : "text-gray-600"
-                        }`}
+                          }`}
                       >
                         <span
                           className={`w-2.5 h-2.5 rounded-full ${getSeverityDotColor(
@@ -413,7 +411,7 @@ export default function MyReportsPage() {
 
                   {/* Location */}
                   {issue.location && (
-                    <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
+                    <div className="bg-gray-50 rounded-full px-3 py-1.5 sm:px-5 sm:py-2.5 w-full">
                       <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
                         <span className="text-gray-500 font-medium text-base text-left">
                           Location
@@ -449,7 +447,7 @@ export default function MyReportsPage() {
 
                   {/* Progress Stage */}
                   <div
-                    className={`rounded-full px-5 py-2.5 w-full ${statusInfo.color}`}
+                    className={`rounded-full px-3 py-1.5 sm:px-5 sm:py-2.5 w-full ${statusInfo.color}`}
                   >
                     <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
                       <span className="font-semibold text-base text-left">
@@ -505,8 +503,8 @@ export default function MyReportsPage() {
                   </div>
                 </div>
 
-                {/* BOTTOM 50%: Image Section - object-contain to avoid cropping */}
-                <div className="h-1/2 px-4 pb-4 flex items-center justify-center">
+                {/* BOTTOM 50% (Mobile) / RIGHT 50% (Desktop): Image Section */}
+                <div className="h-1/2 md:h-full md:w-1/2 px-4 pb-4 md:p-0 flex items-center justify-center bg-gray-50 border-t md:border-t-0 md:border-l border-gray-100">
                   {issue.imageUrls && issue.imageUrls.length > 0 ? (
                     <div className="relative w-full h-full flex items-center justify-center bg-gray-50 rounded-xl overflow-hidden">
                       <img

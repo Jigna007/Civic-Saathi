@@ -499,7 +499,7 @@ export function CreatePost() {
 
             {images.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2 justify-center">
-                {images.map((image, index) => (
+                {images.map((image: File, index: number) => (
                   <Badge
                     key={index}
                     variant="secondary"

@@ -101,26 +101,23 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
   };
 
   return (
-    <div className={`${isMobile ? "w-full h-full" : "max-w-2xl mx-auto mb-6"}`}>
+    <div className={`${isMobile ? "w-full h-full md:max-w-2xl md:h-[90vh] md:m-auto" : "max-w-2xl mx-auto mb-6"}`}>
       <div
-        className={`bg-white ${
-          isMobile
+        className={`bg-white ${isMobile
             ? "w-full h-full flex flex-col rounded-2xl shadow-xl border border-gray-200"
             : "rounded-xl border border-gray-200 shadow-sm hover:shadow-md"
-        } transition-all duration-300 overflow-hidden`}
+          } transition-all duration-300 overflow-hidden`}
       >
         {/* Top Part - User Info */}
         <div
-          className={`${
-            isMobile ? "p-3 flex-shrink-0" : "p-5"
-          } flex-shrink-0 border-b border-gray-100`}
+          className={`${isMobile ? "p-3 flex-shrink-0" : "p-5"
+            } flex-shrink-0 border-b border-gray-100`}
         >
           <div className="flex items-start justify-between">
             <div className="flex items-start space-x-3 flex-1 min-w-0">
               <div
-                className={`${
-                  isMobile ? "h-11 w-11" : "h-12 w-12"
-                } bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0 shadow-md`}
+                className={`${isMobile ? "h-11 w-11" : "h-12 w-12"
+                  } bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0 shadow-md`}
               >
                 <UserIcon className="text-white" size={isMobile ? 18 : 20} />
               </div>
@@ -128,9 +125,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                 {/* User and Rating - First Line */}
                 <div className="flex items-center gap-2 mb-1">
                   <h3
-                    className={`${
-                      isMobile ? "text-lg" : "text-2xl"
-                    } font-semibold text-gray-900`}
+                    className={`${isMobile ? "text-lg" : "text-2xl"
+                      } font-semibold text-gray-900`}
                   >
                     {issue.reporter?.username || "user"}
                   </h3>
@@ -194,14 +190,12 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
 
         {/* Card Container with Navigation - Remaining ~88% */}
         <div
-          className={`${
-            isMobile
+          className={`${isMobile
               ? "flex-1 flex flex-col min-h-0 overflow-hidden"
               : "p-5 pt-4"
-          }`}
+            }`}
         >
-          {/* Card Navigation Area with Arrows */}
-          <div className={`${isMobile ? "flex-1 min-h-0" : "mb-4"} relative`}>
+          <div className={`${isMobile ? "flex-1 min-h-0 relative group" : "mb-4 relative"}`}>
             {/* Left Arrow */}
             {currentCardIndex > 0 && (
               <button
@@ -253,9 +247,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
             {/* Cards Container - Only shows ONE card at a time */}
             <div
               id={`card-container-${issue.id}`}
-              className={`overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide ${
-                isMobile ? "h-full" : "h-64"
-              }`}
+              className={`overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide ${isMobile ? "h-full" : "h-64"
+                }`}
               onScroll={(e) => {
                 const container = e.currentTarget;
                 const scrollLeft = container.scrollLeft;
@@ -362,11 +355,10 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                             {/* Stage Circle */}
                             <div className="flex flex-col items-center">
                               <div
-                                className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                                  currentStage >= stage.id
+                                className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold transition-all ${currentStage >= stage.id
                                     ? "bg-green-600 text-white shadow-lg scale-110"
                                     : "bg-gray-300 text-gray-600"
-                                }`}
+                                  }`}
                               >
                                 {currentStage > stage.id ? "✓" : stage.id}
                               </div>
@@ -374,11 +366,10 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                             {/* Connector Line */}
                             {index < stages.length - 1 && (
                               <div
-                                className={`h-2 flex-1 transition-all rounded ${
-                                  currentStage > stage.id
+                                className={`h-2 flex-1 transition-all rounded ${currentStage > stage.id
                                     ? "bg-green-600"
                                     : "bg-gray-300"
-                                }`}
+                                  }`}
                               />
                             )}
                           </Fragment>
@@ -406,11 +397,10 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                 size="sm"
                 onClick={() => upvoteMutation.mutate()}
                 disabled={upvoteMutation.isPending}
-                className={`flex items-center gap-1.5 transition-all duration-200 ${
-                  isUpvoted
+                className={`flex items-center gap-1.5 transition-all duration-200 ${isUpvoted
                     ? "text-red-600 bg-red-50 hover:bg-red-100"
                     : "text-gray-600 hover:text-red-600 hover:bg-red-50"
-                } px-4 py-2 rounded-lg font-medium`}
+                  } px-4 py-2 rounded-lg font-medium`}
               >
                 <ArrowUp
                   size={18}
