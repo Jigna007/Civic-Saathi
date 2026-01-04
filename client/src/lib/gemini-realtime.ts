@@ -108,18 +108,24 @@ export function createGeminiRealtimeClient(opts: {
         console.log("Speech recognition started");
       };
 
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        // Only process results from the current event, not all accumulated results
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
+      let processedIndex = 0;
 
-          // Only send final results to avoid duplication
-          // Interim results are shown in real-time but get replaced by final ones
-          if (event.results[i].isFinal) {
-            // Send the finalized transcript with a space
-            onTextDelta(transcript + " ");
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        // Ensure we strictly process new results based on our own counter
+        // processedIndex tracks the number of final results we've already handled
+        let newIndex = processedIndex;
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i];
+
+          // Only process if it's a new result we haven't handled yet
+          if (i >= processedIndex && result.isFinal) {
+            const transcript = result[0].transcript;
+            onTextDelta(transcript.trim() + " ");
+            newIndex = i + 1;
           }
         }
+        processedIndex = newIndex;
       };
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
