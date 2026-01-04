@@ -98,67 +98,83 @@ export function createGeminiRealtimeClient(opts: {
 
     try {
       recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
+      // "Definitive Fix" for Android Repetition:
+      // 1. Disable continuous: resets internal buffer after every sentence.
+      // 2. Disable interimResults: prevents "ladder" duplication (A, AB, ABC).
+      recognition.continuous = false;
+      recognition.interimResults = false;
       recognition.lang = "en-US";
       recognition.maxAlternatives = 1;
 
       recognition.onstart = () => {
-        active = true;
-        console.log("Speech recognition started");
+        // Only set active if it's the initial start, not a restart
+        if (!active) {
+          active = true;
+          console.log("Speech recognition started");
+        }
       };
 
-      let processedIndex = 0;
-
       recognition.onresult = (event: SpeechRecognitionEvent) => {
-        // Ensure we strictly process new results based on our own counter
-        // processedIndex tracks the number of final results we've already handled
-        let newIndex = processedIndex;
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const result = event.results[i];
-
-          // Only process if it's a new result we haven't handled yet
-          if (i >= processedIndex && result.isFinal) {
+        // With continuous=false, we only get one result at index 0
+        if (event.results.length > 0) {
+          const result = event.results[0];
+          if (result.isFinal) {
             const transcript = result[0].transcript;
-            onTextDelta(transcript.trim() + " ");
-            newIndex = i + 1;
+            if (transcript.trim()) {
+              onTextDelta(transcript.trim() + " ");
+            }
           }
         }
-        processedIndex = newIndex;
       };
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        // Ignore 'no-speech' as it just means silence -> we'll likely restart or stop
+        if (event.error === "no-speech") {
+          return;
+        }
+
         console.error("Speech recognition error:", event.error);
         if (
           event.error === "not-allowed" ||
           event.error === "service-not-allowed"
         ) {
+          active = false; // Stop trying to restart
           onError(
             new Error(
               "Microphone permission denied. Please allow microphone access."
             )
           );
-        } else if (event.error === "no-speech") {
-          // Don't treat no-speech as an error, just continue
-          console.log("No speech detected");
         } else if (event.error === "network") {
+          active = false;
           onError(
             new Error(
-              "Network error during speech recognition. Please check your internet connection."
+              "Network error. Please check connection."
             )
           );
         } else {
-          onError(new Error(`Speech recognition error: ${event.error}`));
+          // For other errors, we might want to stop or just log
+          // active = false;
+          // onError(new Error(`Speech error: ${event.error}`));
         }
       };
 
       recognition.onend = () => {
-        active = false;
-        console.log("Speech recognition ended");
+        // If we are still "active" (user hasn't clicked stop), restart immediately
+        if (active) {
+          try {
+            recognition?.start();
+          } catch (e) {
+            // If start fails (e.g. not allowed), stop effectively
+            active = false;
+            console.error("Failed to restart recognition", e);
+          }
+        } else {
+          console.log("Speech recognition stopped by user");
+        }
       };
 
       recognition.start();
+      active = true;
     } catch (err) {
       onError(err);
       active = false;
