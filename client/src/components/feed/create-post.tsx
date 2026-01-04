@@ -18,6 +18,56 @@ import {
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { transcribeAudioWithGemini } from "@/lib/gemini";
+
+// Helper for media recording
+function useMediaRecorder() {
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      chunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      return true;
+    } catch (err) {
+      console.error("Failed to start recording:", err);
+      return false;
+    }
+  };
+
+  const stopRecording = (): Promise<Blob> => {
+    return new Promise((resolve) => {
+      if (!mediaRecorderRef.current) {
+        resolve(new Blob([]));
+        return;
+      }
+
+      mediaRecorderRef.current.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        setIsRecording(false);
+        // Stop all tracks
+        mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
+        resolve(blob);
+      };
+
+      mediaRecorderRef.current.stop();
+    });
+  };
+
+  return { isRecording, startRecording, stopRecording };
+}
+
 
 export function CreatePost() {
   const [description, setDescription] = useState("");
@@ -33,6 +83,11 @@ export function CreatePost() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  // Fallback recorder
+  const { isRecording: isRecordingAudio, startRecording, stopRecording } = useMediaRecorder();
+  const [useFallbackSTT, setUseFallbackSTT] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+
 
   const createIssueMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -157,7 +212,7 @@ export function CreatePost() {
         const dx = x + (tileSize - dw) / 2;
         const dy = y + (tileSize - dh) / 2;
         ctx.drawImage(img, dx, dy, dw, dh);
-      } catch {}
+      } catch { }
     }
 
     return canvas.toDataURL("image/jpeg", 0.9);
@@ -269,9 +324,36 @@ export function CreatePost() {
             <div className="flex items-center gap-2">
               <Button
                 type="button"
-                variant="outline"
+                variant={recording || isRecordingAudio ? "destructive" : "outline"}
                 size="sm"
                 onClick={async () => {
+                  // Fallback Mode: Record & Transcribe
+                  if (useFallbackSTT) {
+                    if (isRecordingAudio) {
+                      const audioBlob = await stopRecording();
+                      setIsTranscribing(true);
+                      console.log("[STT] Recording finished, sending to Gemini...");
+                      try {
+                        const text = await transcribeAudioWithGemini(audioBlob);
+                        if (text) {
+                          setDescription((prev) => (prev ? prev + " " + text : text));
+                          toast({ title: "Transcription complete" });
+                        } else {
+                          toast({ title: "Could not transcribe audio", variant: "destructive" });
+                        }
+                      } catch (err) {
+                        console.error("[STT] Transcription failed:", err);
+                        toast({ title: "Transcription error", description: "Please try again.", variant: "destructive" });
+                      } finally {
+                        setIsTranscribing(false);
+                      }
+                    } else {
+                      await startRecording();
+                    }
+                    return;
+                  }
+
+                  // Primary Mode: Real-time
                   try {
                     if (recording) {
                       rtClientRef.current?.stop();
@@ -286,17 +368,50 @@ export function CreatePost() {
                             prev ? prev + delta : delta
                           );
                       },
-                      onError: (e) => console.error("Realtime STT error", e),
+                      onError: (e) => {
+                        console.error("Realtime STT error", e);
+                        // Switch to fallback if it's a network/not-allowed error
+                        if (e.message.includes("Network") || e.message.includes("not-allowed")) {
+                          console.warn("[STT] Switching to fallback Record & Transcribe mode due to error.");
+                          setUseFallbackSTT(true);
+                          setRecording(false);
+                          toast({
+                            title: "Switched to Recording Mode",
+                            description: "Real-time speech failed. You can now record audio to transcribe.",
+                            variant: "default"
+                          });
+                        }
+                      },
                     });
                     setRecording(true);
                     await rtClientRef.current.start();
                   } catch (err) {
                     console.error("Mic access/transcription failed", err);
                     setRecording(false);
+                    setUseFallbackSTT(true);
                   }
                 }}
               >
-                {recording ? "Stop" : "Speak"}
+                {recording ? (
+                  <>
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse mr-2" />
+                    Stop
+                  </>
+                ) : isRecordingAudio ? (
+                  <>
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse mr-2" />
+                    Stop Rec
+                  </>
+                ) : isTranscribing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Transcribing...
+                  </>
+                ) : useFallbackSTT ? (
+                  "Record Audio"
+                ) : (
+                  "Speak"
+                )}
               </Button>
             </div>
           </div>
