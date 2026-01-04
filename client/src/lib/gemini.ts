@@ -75,7 +75,7 @@ async function blobToWavBase64(blob: Blob): Promise<string> {
   const b64 = arrayBufferToBase64(buffer);
   try {
     await audioCtx.close();
-  } catch {}
+  } catch { }
   return b64;
 }
 
@@ -89,7 +89,7 @@ export async function transcribeAudioWithGemini(audio: Blob): Promise<string> {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   const prompt =
-    "Transcribe the following audio to plain text (auto-detect language). Reply with text only.";
+    "Transcribe the spoken audio exactly as is. Return ONLY the transcribed text. If no speech is detected, return nothing. Do not add 'Thank you' or other conversational text.";
 
   // Attempt 1: send original blob mime (e.g., audio/webm;codecs=opus)
   try {
