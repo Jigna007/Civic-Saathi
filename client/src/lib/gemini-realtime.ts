@@ -49,12 +49,12 @@ interface SpeechRecognition extends EventTarget {
   onaudioend: ((this: SpeechRecognition, ev: Event) => any) | null;
   onend: ((this: SpeechRecognition, ev: Event) => any) | null;
   onerror:
-    | ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any)
-    | null;
+  | ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any)
+  | null;
   onnomatch: ((this: SpeechRecognition, ev: Event) => any) | null;
   onresult:
-    | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any)
-    | null;
+  | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any)
+  | null;
   onsoundstart: ((this: SpeechRecognition, ev: Event) => any) | null;
   onsoundend: ((this: SpeechRecognition, ev: Event) => any) | null;
   onspeechstart: ((this: SpeechRecognition, ev: Event) => any) | null;
@@ -75,7 +75,7 @@ export function createGeminiRealtimeClient(opts: {
   instructions?: string;
 }): RealtimeClient {
   const onTextDelta = opts.onTextDelta;
-  const onError = opts.onError ?? (() => {});
+  const onError = opts.onError ?? (() => { });
 
   let recognition: SpeechRecognition | null = null;
   let active = false;
@@ -136,6 +136,12 @@ export function createGeminiRealtimeClient(opts: {
         } else if (event.error === "no-speech") {
           // Don't treat no-speech as an error, just continue
           console.log("No speech detected");
+        } else if (event.error === "network") {
+          onError(
+            new Error(
+              "Network error during speech recognition. Please check your internet connection."
+            )
+          );
         } else {
           onError(new Error(`Speech recognition error: ${event.error}`));
         }

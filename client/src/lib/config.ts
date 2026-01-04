@@ -12,11 +12,13 @@ const PRODUCTION_BACKEND_URL = "https://web-production-14e5.up.railway.app";
 const isProduction = import.meta.env.PROD;
 
 // Use VITE_API_URL if available, otherwise use fallback in production
-export const API_BASE_URL = VITE_API_URL || (isProduction ? PRODUCTION_BACKEND_URL : "");
+// We explicitly default to the Railway URL if VITE_API_URL is missing in production
+// to ensure the specific deployment works even if env vars are tricky.
+export const API_BASE_URL =
+  VITE_API_URL || (isProduction ? PRODUCTION_BACKEND_URL : "");
 
 // Log configuration for debugging (only in development or when there are issues)
-if (isProduction) {
-  console.log("[Config] Production mode detected");
-  console.log("[Config] VITE_API_URL:", VITE_API_URL || "(not set)");
-  console.log("[Config] Using API_BASE_URL:", API_BASE_URL);
-}
+console.log("[Config] Environment:", isProduction ? "Production" : "Development");
+console.log("[Config] VITE_API_URL:", VITE_API_URL || "(not set)");
+console.log("[Config] Final API_BASE_URL:", API_BASE_URL);
+
