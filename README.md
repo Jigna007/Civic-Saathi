@@ -11,7 +11,7 @@ An intelligent maintenance management platform leveraging AI to streamline issue
 - **Technician Management**: Track specialist availability and assignments
 - **Responsive Design**: Modern, mobile-friendly interface built with React and Tailwind CSS
 
-## Technology Stack
+## Tech Stack
 
 ### Frontend
 
