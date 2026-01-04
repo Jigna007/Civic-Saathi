@@ -85,10 +85,10 @@ export default function AdminDashboardPage() {
 
   const stats = {
     total: issues?.length || 0,
-    critical: issues?.filter((i) => i.severity === "critical").length || 0,
-    high: issues?.filter((i) => i.severity === "high").length || 0,
-    inProgress: issues?.filter((i) => i.status === "in_progress").length || 0,
-    completed: issues?.filter((i) => i.status === "resolved").length || 0,
+    critical: issues?.filter((i: MaintenanceIssue) => i.severity === "critical").length || 0,
+    high: issues?.filter((i: MaintenanceIssue) => i.severity === "high").length || 0,
+    inProgress: issues?.filter((i: MaintenanceIssue) => i.status === "in_progress").length || 0,
+    completed: issues?.filter((i: MaintenanceIssue) => i.status === "resolved").length || 0,
   };
 
   const getSeverityColor = (severity: string) => {
@@ -123,8 +123,8 @@ export default function AdminDashboardPage() {
 
   const getTechnicianEffectiveness = (techId: string) => {
     const techIssues =
-      issues?.filter((i) => i.assignedTechnicianId === techId) || [];
-    const resolved = techIssues.filter((i) => i.status === "resolved").length;
+      issues?.filter((i: MaintenanceIssue) => i.assignedTechnicianId === techId) || [];
+    const resolved = techIssues.filter((i: MaintenanceIssue) => i.status === "resolved").length;
     const total = techIssues.length;
     return total > 0 ? Math.round((resolved / total) * 100) : 0;
   };
@@ -136,12 +136,12 @@ export default function AdminDashboardPage() {
 
   const selectedDomainData = domains.find((d) => d.id === selectedDomain);
   const domainTechnicians = selectedDomain
-    ? technicians.filter((t) =>
-        // Mock filter - in real app, technicians would be assigned to domains
-        t.specialty
-          .toLowerCase()
-          .includes(selectedDomainData?.name.toLowerCase().split(" ")[0] || "")
-      )
+    ? technicians.filter((t: Technician) =>
+      // Mock filter - in real app, technicians would be assigned to domains
+      t.specialty
+        .toLowerCase()
+        .includes(selectedDomainData?.name.toLowerCase().split(" ")[0] || "")
+    )
     : [];
 
   return (
@@ -162,7 +162,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mb-8">
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mb-8">
         <Card className="admin-card hover-lift animate-slide-up">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Issues</CardTitle>
@@ -239,10 +239,10 @@ export default function AdminDashboardPage() {
       </div>
 
       <Tabs defaultValue="issues" className="space-y-6 animate-fade-in">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="issues">All Issues</TabsTrigger>
-          <TabsTrigger value="departments">Departments</TabsTrigger>
-          <TabsTrigger value="technicians">Technicians</TabsTrigger>
+        <TabsList className="w-full flex flex-col h-auto sm:grid sm:grid-cols-3 gap-2 sm:gap-0">
+          <TabsTrigger value="issues" className="w-full">All Issues</TabsTrigger>
+          <TabsTrigger value="departments" className="w-full">Departments</TabsTrigger>
+          <TabsTrigger value="technicians" className="w-full">Technicians</TabsTrigger>
         </TabsList>
 
         {/* Issues Tab */}
@@ -253,7 +253,7 @@ export default function AdminDashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {issues?.slice(0, 10).map((issue) => (
+                {issues?.slice(0, 10).map((issue: MaintenanceIssue & { reporter?: User }) => (
                   <div
                     key={issue.id}
                     className="p-4 border border-gray-200 rounded-lg transition-colors hover:bg-gray-50"
@@ -395,7 +395,7 @@ export default function AdminDashboardPage() {
                   {departments.map((dept) => {
                     // Filter issues by exact category match
                     const deptIssues = (issues || []).filter(
-                      (i) => i.category === dept.key
+                      (i: MaintenanceIssue) => i.category === dept.key
                     );
                     const colors = getCategoryColors(dept.key);
                     return (
@@ -418,7 +418,7 @@ export default function AdminDashboardPage() {
                             </p>
                           ) : (
                             <div className="space-y-3">
-                              {deptIssues.map((issue) => (
+                              {deptIssues.map((issue: MaintenanceIssue) => (
                                 <div
                                   key={issue.id}
                                   className="border rounded-lg p-3 hover:bg-gray-50 transition"
@@ -709,18 +709,17 @@ export default function AdminDashboardPage() {
                 </h3>
                 <div className="grid gap-4 md:grid-cols-2">
                   {domainTechnicians.length > 0 ? (
-                    domainTechnicians.map((tech) => (
+                    domainTechnicians.map((tech: Technician) => (
                       <div key={tech.id} className="p-4 border rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium">{tech.name}</h4>
                           <div
-                            className={`w-3 h-3 rounded-full ${
-                              tech.status === "available"
-                                ? "bg-green-500"
-                                : tech.status === "busy"
+                            className={`w-3 h-3 rounded-full ${tech.status === "available"
+                              ? "bg-green-500"
+                              : tech.status === "busy"
                                 ? "bg-yellow-500"
                                 : "bg-red-500"
-                            }`}
+                              }`}
                           />
                         </div>
                         <p className="text-sm text-gray-600 mb-2">

@@ -40,7 +40,7 @@ export default function MyReportsPage() {
 
   const myIssues = useMemo(() => {
     const list = allIssues || [];
-    return list.filter((i: any) => {
+    return list.filter((i: MaintenanceIssue & { reporter?: User }) => {
       if (!user?.id) return false;
       if (typeof i.reporterId !== "undefined") return i.reporterId === user.id;
       return i.reporter?.id === user.id;
@@ -197,13 +197,13 @@ export default function MyReportsPage() {
 
   const totalReports = myIssues?.length || 0;
   const resolvedReports =
-    myIssues?.filter((issue) => issue.status === "resolved").length || 0;
+    myIssues?.filter((issue: MaintenanceIssue) => issue.status === "resolved").length || 0;
   const inProgressReports =
-    myIssues?.filter((issue) => issue.status === "in_progress").length || 0;
+    myIssues?.filter((issue: MaintenanceIssue) => issue.status === "in_progress").length || 0;
   const avgProgress =
     totalReports > 0
       ? Math.round(
-        (myIssues?.reduce((sum, issue) => sum + issue.progress, 0) || 0) /
+        (myIssues?.reduce((sum: number, issue: MaintenanceIssue) => sum + (issue.progress || 0), 0) || 0) /
         totalReports
       )
       : 0;
@@ -342,11 +342,11 @@ export default function MyReportsPage() {
         - No nested scroll container - snapping is handled by parent
       */}
 
-      {myIssues?.map((issue) => {
+      {myIssues?.map((issue: MaintenanceIssue) => {
         const statusInfo = getStatusInfo(issue.status);
         const StatusIcon = statusInfo.icon;
         const assignedTech = technicians?.find(
-          (t) => t.id === issue.assignedTechnicianId
+          (t: Technician) => t.id === issue.assignedTechnicianId
         );
 
         return (
@@ -359,21 +359,21 @@ export default function MyReportsPage() {
                 {/* TOP 50% (Mobile) / LEFT 50% (Desktop): Info Section */}
                 <div className="h-1/2 md:h-full md:w-1/2 flex flex-col gap-2 sm:gap-4 px-4 py-3 sm:px-6 sm:py-5 overflow-y-auto md:overflow-y-auto custom-scrollbar">
                   {/* Caption - at the top, larger font, left aligned */}
-                  <h3 className="font-bold text-gray-900 text-xl sm:text-2xl leading-tight text-left mb-1 sm:mb-2">
+                  <h3 className="font-bold text-gray-900 text-base sm:text-2xl leading-tight text-left mb-1 sm:mb-2">
                     {issue.title}
                   </h3>
 
                   {/* Category */}
-                  <div className="bg-gray-50 rounded-full px-3 py-1.5 sm:px-5 sm:py-2.5 w-full">
-                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
-                      <span className="text-gray-500 font-medium text-base text-left">
+                  <div className="bg-gray-50 rounded-full px-2.5 py-1.5 sm:px-5 sm:py-2.5 w-full">
+                    <div className="grid grid-cols-[65px_auto_1fr] gap-1.5 sm:gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-sm sm:text-base text-left">
                         Category
                       </span>
-                      <span className="text-gray-500 font-medium text-base">
+                      <span className="text-gray-500 font-medium text-sm sm:text-base">
                         :
                       </span>
                       <span
-                        className={`text-base font-semibold ${getCategoryColors(issue.category).text
+                        className={`text-sm sm:text-base font-semibold ${getCategoryColors(issue.category).text
                           }`}
                       >
                         {issue.category}
@@ -382,16 +382,16 @@ export default function MyReportsPage() {
                   </div>
 
                   {/* Severity */}
-                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
-                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
-                      <span className="text-gray-500 font-medium text-base text-left">
+                  <div className="bg-gray-50 rounded-full px-2.5 py-1.5 sm:px-5 sm:py-2.5 w-full">
+                    <div className="grid grid-cols-[65px_auto_1fr] gap-1.5 sm:gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-sm sm:text-base text-left">
                         Severity
                       </span>
                       <span className="text-gray-500 font-medium text-base">
                         :
                       </span>
                       <span
-                        className={`flex items-center gap-2 text-base font-semibold capitalize ${issue.severity === "critical"
+                        className={`flex items-center gap-2 text-sm sm:text-base font-semibold capitalize ${issue.severity === "critical"
                           ? "text-red-600"
                           : issue.severity === "high" ||
                             issue.severity === "major"
@@ -411,9 +411,9 @@ export default function MyReportsPage() {
 
                   {/* Location */}
                   {issue.location && (
-                    <div className="bg-gray-50 rounded-full px-3 py-1.5 sm:px-5 sm:py-2.5 w-full">
-                      <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
-                        <span className="text-gray-500 font-medium text-base text-left">
+                    <div className="bg-gray-50 rounded-full px-2.5 py-1.5 sm:px-5 sm:py-2.5 w-full">
+                      <div className="grid grid-cols-[65px_auto_1fr] gap-1.5 sm:gap-2.5 items-center">
+                        <span className="text-gray-500 font-medium text-sm sm:text-base text-left">
                           Location
                         </span>
                         <span className="text-gray-500 font-medium text-base">
@@ -421,22 +421,22 @@ export default function MyReportsPage() {
                         </span>
                         <LocationDisplay
                           location={issue.location}
-                          className="text-gray-700 font-medium text-base"
+                          className="text-gray-700 font-medium text-sm sm:text-base"
                         />
                       </div>
                     </div>
                   )}
 
                   {/* Time */}
-                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
-                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
-                      <span className="text-gray-500 font-medium text-base text-left">
+                  <div className="bg-gray-50 rounded-full px-2.5 py-1.5 sm:px-5 sm:py-2.5 w-full">
+                    <div className="grid grid-cols-[65px_auto_1fr] gap-1.5 sm:gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-sm sm:text-base text-left">
                         Reported
                       </span>
                       <span className="text-gray-500 font-medium text-base">
                         :
                       </span>
-                      <span className="font-medium text-base text-gray-700">
+                      <span className="font-medium text-sm sm:text-base text-gray-700">
                         {formatDistanceToNow(new Date(issue.createdAt!), {
                           addSuffix: false,
                         }).replace(/^about /, "")}{" "}
@@ -447,14 +447,14 @@ export default function MyReportsPage() {
 
                   {/* Progress Stage */}
                   <div
-                    className={`rounded-full px-3 py-1.5 sm:px-5 sm:py-2.5 w-full ${statusInfo.color}`}
+                    className={`rounded-full px-2.5 py-1.5 sm:px-5 sm:py-2.5 w-full ${statusInfo.color}`}
                   >
-                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
-                      <span className="font-semibold text-base text-left">
+                    <div className="grid grid-cols-[65px_auto_1fr] gap-1.5 sm:gap-2.5 items-center">
+                      <span className="font-semibold text-sm sm:text-base text-left">
                         Status
                       </span>
                       <span className="font-semibold text-base">:</span>
-                      <span className="font-semibold text-base">
+                      <span className="font-semibold text-sm sm:text-base">
                         {issue.status === "open" && "Issue Reported"}
                         {issue.status === "assigned" && "Taskforce Assigned"}
                         {issue.status === "in_progress" &&
@@ -471,9 +471,9 @@ export default function MyReportsPage() {
                   </div>
 
                   {/* Technician Info */}
-                  <div className="bg-gray-50 rounded-full px-5 py-2.5 w-full">
-                    <div className="grid grid-cols-[100px_auto_1fr] gap-2.5 items-center">
-                      <span className="text-gray-500 font-medium text-base flex items-center gap-1.5 text-left">
+                  <div className="bg-gray-50 rounded-full px-2.5 py-1.5 sm:px-5 sm:py-2.5 w-full">
+                    <div className="grid grid-cols-[65px_auto_1fr] gap-1.5 sm:gap-2.5 items-center">
+                      <span className="text-gray-500 font-medium text-sm sm:text-base flex items-center gap-1.5 text-left">
                         <UserIcon size={16} />
                         Technician
                       </span>
@@ -481,7 +481,7 @@ export default function MyReportsPage() {
                         :
                       </span>
                       {assignedTech ? (
-                        <span className="text-gray-800 text-base">
+                        <span className="text-gray-800 text-sm sm:text-base">
                           <span className="font-semibold">
                             {assignedTech.name}
                           </span>
@@ -495,7 +495,7 @@ export default function MyReportsPage() {
                           )}
                         </span>
                       ) : (
-                        <span className="text-gray-500 font-medium text-base">
+                        <span className="text-gray-500 font-medium text-sm sm:text-base">
                           Not assigned yet
                         </span>
                       )}

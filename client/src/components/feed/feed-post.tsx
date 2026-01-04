@@ -104,8 +104,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
     <div className={`${isMobile ? "w-full h-full md:max-w-2xl md:h-[90vh] md:m-auto" : "max-w-2xl mx-auto mb-6"}`}>
       <div
         className={`bg-white ${isMobile
-            ? "w-full h-full flex flex-col rounded-2xl shadow-xl border border-gray-200"
-            : "rounded-xl border border-gray-200 shadow-sm hover:shadow-md"
+          ? "w-full h-full flex flex-col rounded-2xl shadow-xl border border-gray-200"
+          : "rounded-xl border border-gray-200 shadow-sm hover:shadow-md"
           } transition-all duration-300 overflow-hidden`}
       >
         {/* Top Part - User Info */}
@@ -125,8 +125,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                 {/* User and Rating - First Line */}
                 <div className="flex items-center gap-2 mb-1">
                   <h3
-                    className={`${isMobile ? "text-lg" : "text-2xl"
-                      } font-semibold text-gray-900`}
+                    className={`${isMobile ? "text-base" : "text-2xl"
+                      } font-semibold text-gray-900 truncate max-w-[120px] sm:max-w-none`}
                   >
                     {issue.reporter?.username || "user"}
                   </h3>
@@ -164,7 +164,7 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                       </svg>
                       <LocationDisplay
                         location={issue.location}
-                        className="font-medium truncate max-w-[160px]"
+                        className="font-medium truncate max-w-[100px] sm:max-w-[160px]"
                       />
                     </div>
                   )}
@@ -191,8 +191,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
         {/* Card Container with Navigation - Remaining ~88% */}
         <div
           className={`${isMobile
-              ? "flex-1 flex flex-col min-h-0 overflow-hidden"
-              : "p-5 pt-4"
+            ? "flex-1 flex flex-col min-h-0 overflow-hidden"
+            : "p-5 pt-4"
             }`}
         >
           <div className={`${isMobile ? "flex-1 min-h-0 relative group" : "mb-4 relative"}`}>
@@ -356,8 +356,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                             <div className="flex flex-col items-center">
                               <div
                                 className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold transition-all ${currentStage >= stage.id
-                                    ? "bg-green-600 text-white shadow-lg scale-110"
-                                    : "bg-gray-300 text-gray-600"
+                                  ? "bg-green-600 text-white shadow-lg scale-110"
+                                  : "bg-gray-300 text-gray-600"
                                   }`}
                               >
                                 {currentStage > stage.id ? "✓" : stage.id}
@@ -367,8 +367,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                             {index < stages.length - 1 && (
                               <div
                                 className={`h-2 flex-1 transition-all rounded ${currentStage > stage.id
-                                    ? "bg-green-600"
-                                    : "bg-gray-300"
+                                  ? "bg-green-600"
+                                  : "bg-gray-300"
                                   }`}
                               />
                             )}
@@ -398,8 +398,8 @@ export function FeedPost({ issue, isMobile = false }: FeedPostProps) {
                 onClick={() => upvoteMutation.mutate()}
                 disabled={upvoteMutation.isPending}
                 className={`flex items-center gap-1.5 transition-all duration-200 ${isUpvoted
-                    ? "text-red-600 bg-red-50 hover:bg-red-100"
-                    : "text-gray-600 hover:text-red-600 hover:bg-red-50"
+                  ? "text-red-600 bg-red-50 hover:bg-red-100"
+                  : "text-gray-600 hover:text-red-600 hover:bg-red-50"
                   } px-4 py-2 rounded-lg font-medium`}
               >
                 <ArrowUp

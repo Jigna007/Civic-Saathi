@@ -12,4 +12,4 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
-declare module '@tanstack/react-query';
+
