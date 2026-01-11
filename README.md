@@ -144,8 +144,10 @@ Open `http://localhost:5173` in your browser.
 - View statistics: total issues, status breakdown, severity distribution
 - Manage issues: update status, assign technicians, track progress
 - Manage technicians: add specialists, update availability
+  
+---
 
 ### Deployed Web App URL
-- https://civic-saathi.vercel.app
+- **URL**: https://civic-saathi.vercel.app
   
 ---
